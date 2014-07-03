@@ -1,0 +1,52 @@
+Estrutura-de-Dados
+==================
+
+Matéria Estrutura - Flávio 2014.1
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct No
+{
+        int chave;
+        struct No *esq;
+        struct No *dir;
+} No, *arvore;
+
+void inicializaarvore(arvore *a)
+    {
+        a = NULL;
+    }
+
+_Bool consultainteiro (arvore *a, int x)
+    {
+        if(a!=NULL)
+            {
+            if (a->chave==x)
+                return true;
+            else
+                {
+                if(a->chave > x)
+                    consultainteiro(a->esq);
+                if(a->chave < x)
+                    consultainteiro(a->dir);
+                }
+            }
+        else
+            return false;
+    }
+
+void inserechave(arvore *a, int x)
+        {
+            if(consultainteiro(*a,x))
+                return;
+
+            No *p, *pai;
+
+            if(!(p=(No *)malloc(sizeof(No))))
+                return false;
+
+
+
+        }
