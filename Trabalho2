@@ -1,52 +1,211 @@
-Estrutura-de-Dados
-==================
-
-Matéria Estrutura - Flávio 2014.1
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 typedef struct No
 {
         int chave;
         struct No *esq;
         struct No *dir;
-} No, *arvore;
+} No;
+
+typedef struct No *arvore;
 
 void inicializaarvore(arvore *a)
-    {
-        a = NULL;
-    }
+{
+        *a = NULL;
+}
 
-_Bool consultainteiro (arvore *a, int x)
-    {
+arvore *consultainteiro (arvore *a, int x)
+{
         if(a!=NULL)
             {
             if (a->chave==x)
-                return true;
+                return a;
             else
                 {
                 if(a->chave > x)
-                    consultainteiro(a->esq);
+                    return consultainteiro(a->esq,x);
                 if(a->chave < x)
-                    consultainteiro(a->dir);
+                    return consultainteiro(a->dir,x);
                 }
             }
         else
-            return false;
+            return NULL;
     }
 
-void inserechave(arvore *a, int x)
-        {
-            if(consultainteiro(*a,x))
+arvore *inserechave(arvore *a, int x)
+{
+            if(consultainteiro(a,x))
                 return;
 
-            No *p, *pai;
+         if(a==NULL)
+        {
+            if(!(a=(No *)malloc(sizeof(No))))
+                return;
 
-            if(!(p=(No *)malloc(sizeof(No))))
-                return false;
-
-
-
+            a->chave=x;
+            a->esq=a->dir=NULL;
         }
+
+        else if(x<a->chave)
+                a->esq = inserechave(a->esq, x);
+
+        else if(x>a->chave)
+                a->dir = inserechave(a->dir,x);
+
+        return a;
+        }
+
+void listaordem (arvore *a, char ch)
+{
+    if (ch=='c')
+    {
+            if (a!=NULL)
+            {
+                listaordem(a->esq,'c') ;
+                printf("%d \n",a->chave);
+                listaordem(a->dir,'c');
+            }
+    }
+
+    if(ch=='d')
+    {
+            if (a!=NULL)
+            {
+                listaordem(a->dir,'c');
+                printf("%d \n",a->chave);
+                listaordem(a->esq,'c') ;
+            }
+    }
+}
+
+arvore *removeinteiro (arvore *a, int x)
+{
+
+    if(a==NULL)
+        return NULL;
+
+    else if(a->chave>x)
+        a->esq = removeinteiro(a->esq,x);
+
+    else if(a->chave<x)
+        a->dir = removeinteiro(a->dir,x);
+
+    else
+    {
+        if(a->dir==a->esq==NULL)
+        {
+            free(a);
+            a=NULL;
+        }
+
+        else if (a->esq==NULL)
+        {
+            arvore *r = a;
+            a=a->dir;
+            free(r);
+        }
+
+        else if(a->dir==NULL)
+        {
+            arvore *r = a;
+            a=a->esq;
+            free(r);
+        }
+
+        else
+        {
+            arvore *h = a->esq;
+            while (h->dir != NULL)
+            {
+                h=h->dir;
+            }
+            a->chave = h->chave;
+            h->chave = x;
+            a->esq = removeinteiro(a->esq,x);
+        }
+    }
+
+return a;
+}
+
+void imprimearvore (arvore *a)
+{
+    if (a!=NULL)
+    {
+        imprimearvore(a->esq);
+        printf("chave: %d",a->chave);
+
+        if(a->esq==NULL)
+            printf(" fesq: nil");
+        else
+        printf(" fesq: %d", a->esq->chave);
+
+        if(a->dir=NULL)
+            printf(" fdir: nil \n");
+        else
+        printf(" fdir: %d \n", a->dir->chave);
+
+        imprimearvore(a->dir);
+    }
+}
+
+void imprimenivel (arvore *a, int x,int y)
+{
+    if(y==x)
+        printf("%d \n",a->chave);
+
+    if(y<x)
+    {
+        y++;
+        imprimenivel(a->esq,x,y);
+        imprimenivel(a->dir,x,y);
+    }
+}
+
+int main()
+{
+    arvore *arvbb;
+    char escolha,opcao;
+    int numero, nivel;
+
+    inicializaarvore(avrbb);
+    scanf("%c",&escolha);
+
+    do
+    {
+        if(escolha=='i')
+        {
+            scanf("%d",&numero);
+            inserechave(&arvbb,numero);
+        }
+        else if(escolha=='c')
+        {
+            scanf("%d",&numero)
+            consultainteiro(&avrbb,numero);
+        }
+        else if(escolha=='r')
+        {
+            scanf("%d",&numero);
+            removeinteiro(&avrbb,numero);
+        }
+        else if(escolha=='p')
+        {
+            scanf("%c",&opcao);
+            listaordem(&avrbb,opcao);
+        }
+        else if(escolha=='n')
+        {
+            scanf("%d",&numero);
+            nivel=0;
+            imprimenivel(&avrbb,numero,nivel);
+        }
+        else if(escolha=='d')
+            imprimearvore(&avrbb);
+
+        else if(escolha=='e')
+            break;
+
+        scanf("%c",&escolha);
+    }while(1);
+}
